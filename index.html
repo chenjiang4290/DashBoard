@@ -1,8 +1,6 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>陈讲的个人工作看板</title>
   <style>
     :root {
@@ -374,24 +372,24 @@
         <p>岗位：产品经理</p>
       </div>
       <div class="upload-wrap">
-        <input id="csvInput" type="file" accept=".csv,text/csv" style="display:none" />
+        <input id="csvInput" type="file" accept=".csv,text/csv" style="display:none">
         <button id="uploadBtn" class="btn">上传 CSV</button>
         <button id="exportBtn" class="btn">导出当前带数据HTML</button>
         <span class="hint">请上传格式正确的CSV</span>
       </div>
     </div>
 
-    <div id="status" class="status">等待上传 CSV 文件...</div>
+    <div id="status" class="status">已加载：260331.csv</div>
 
     <section class="section section-today">
-      <h2 id="section_latest_title">-/-/-数据</h2>
+      <h2 id="section_latest_title">2026/3/30数据</h2>
       <div class="grid-6">
-        <div class="metric-card"><div class="metric-title" id="mt_post">-号新增发帖</div><div class="metric-value" id="today_post">-</div><div class="metric-delta" id="today_post_delta">较前日：-</div></div>
-        <div class="metric-card"><div class="metric-title" id="mt_comment">-号新增评论</div><div class="metric-value" id="today_comment">-</div><div class="metric-delta" id="today_comment_delta">较前日：-</div></div>
-        <div class="metric-card"><div class="metric-title" id="mt_rate">-号带评帖占比</div><div class="metric-value" id="today_rate">-</div><div class="metric-delta" id="today_rate_delta">较前日：-</div></div>
-        <div class="metric-card"><div class="metric-title" id="mt_sub_new">-号新增订阅</div><div class="metric-value" id="today_sub_new">-</div><div class="metric-delta" id="today_sub_new_delta">较前日：-</div></div>
-        <div class="metric-card"><div class="metric-title" id="mt_renew">-号新增续订</div><div class="metric-value" id="today_renew">-</div><div class="metric-delta" id="today_renew_delta">较前日：-</div></div>
-        <div class="metric-card"><div class="metric-title" id="mt_avg_ratio">-号人均评论比</div><div class="metric-value" id="today_avg_ratio">-</div><div class="metric-delta" id="today_avg_ratio_delta">较前日：-</div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_post">30号新增发帖</div><div class="metric-value" id="today_post">833</div><div class="metric-delta delta-up" id="today_post_delta"><span class="delta-text">较前日：+53</span><span class="delta-arrow" aria-hidden="true"></span></div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_comment">30号新增评论</div><div class="metric-value" id="today_comment">2073</div><div class="metric-delta delta-down" id="today_comment_delta"><span class="delta-text">较前日：-65</span><span class="delta-arrow" aria-hidden="true"></span></div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_rate">30号带评帖占比</div><div class="metric-value" id="today_rate">30.93</div><div class="metric-delta delta-down" id="today_rate_delta"><span class="delta-text">较前日：-19.90</span><span class="delta-arrow" aria-hidden="true"></span></div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_sub_new">30号新增订阅</div><div class="metric-value" id="today_sub_new">55</div><div class="metric-delta delta-down" id="today_sub_new_delta"><span class="delta-text">较前日：-15</span><span class="delta-arrow" aria-hidden="true"></span></div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_renew">30号新增续订</div><div class="metric-value" id="today_renew">16</div><div class="metric-delta" id="today_renew_delta"><span class="delta-text">较前日：+0</span></div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_avg_ratio">30号人均评论比</div><div class="metric-value" id="today_avg_ratio">0.16</div><div class="metric-delta delta-up" id="today_avg_ratio_delta"><span class="delta-text">较前日：+0.01</span><span class="delta-arrow" aria-hidden="true"></span></div></div>
       </div>
     </section>
 
@@ -401,60 +399,60 @@
         <div class="ratio-card">
           <div class="metric-title">新增发帖环比</div>
           <div class="ratio-chart-row">
-            <div class="ratio-bar-wrap"><canvas id="ratio_bar_post" width="280" height="160"></canvas></div>
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_post" width="378" height="207" data-logical-w="291" data-logical-h="160" style="width: 291px; height: 160px;"></canvas></div>
             <div class="ratio-pct-block">
               <span class="ratio-pct-label">两日环比</span>
-              <span class="ratio-pct-value" id="ratio_post_pct">-</span>
+              <span class="ratio-pct-value" id="ratio_post_pct">106.79%</span>
             </div>
           </div>
         </div>
         <div class="ratio-card">
           <div class="metric-title">新增评论环比</div>
           <div class="ratio-chart-row">
-            <div class="ratio-bar-wrap"><canvas id="ratio_bar_comment" width="280" height="160"></canvas></div>
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_comment" width="378" height="207" data-logical-w="291" data-logical-h="160" style="width: 291px; height: 160px;"></canvas></div>
             <div class="ratio-pct-block">
               <span class="ratio-pct-label">两日环比</span>
-              <span class="ratio-pct-value" id="ratio_comment_pct">-</span>
+              <span class="ratio-pct-value" id="ratio_comment_pct">96.96%</span>
             </div>
           </div>
         </div>
         <div class="ratio-card">
           <div class="metric-title">带评帖占比环比</div>
           <div class="ratio-chart-row">
-            <div class="ratio-bar-wrap"><canvas id="ratio_bar_rate" width="280" height="160"></canvas></div>
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_rate" width="378" height="207" data-logical-w="291" data-logical-h="160" style="width: 291px; height: 160px;"></canvas></div>
             <div class="ratio-pct-block">
               <span class="ratio-pct-label">两日环比</span>
-              <span class="ratio-pct-value" id="ratio_rate_pct">-</span>
+              <span class="ratio-pct-value" id="ratio_rate_pct">60.85%</span>
             </div>
           </div>
         </div>
         <div class="ratio-card">
           <div class="metric-title">新增订阅环比</div>
           <div class="ratio-chart-row">
-            <div class="ratio-bar-wrap"><canvas id="ratio_bar_sub_new" width="280" height="160"></canvas></div>
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_sub_new" width="378" height="207" data-logical-w="291" data-logical-h="160" style="width: 291px; height: 160px;"></canvas></div>
             <div class="ratio-pct-block">
               <span class="ratio-pct-label">两日环比</span>
-              <span class="ratio-pct-value" id="ratio_sub_new_pct">-</span>
+              <span class="ratio-pct-value" id="ratio_sub_new_pct">78.57%</span>
             </div>
           </div>
         </div>
         <div class="ratio-card">
           <div class="metric-title">新增续订环比</div>
           <div class="ratio-chart-row">
-            <div class="ratio-bar-wrap"><canvas id="ratio_bar_renew" width="280" height="160"></canvas></div>
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_renew" width="378" height="207" data-logical-w="291" data-logical-h="160" style="width: 291px; height: 160px;"></canvas></div>
             <div class="ratio-pct-block">
               <span class="ratio-pct-label">两日环比</span>
-              <span class="ratio-pct-value" id="ratio_renew_pct">-</span>
+              <span class="ratio-pct-value" id="ratio_renew_pct">100.00%</span>
             </div>
           </div>
         </div>
         <div class="ratio-card">
           <div class="metric-title">人均评论比环比</div>
           <div class="ratio-chart-row">
-            <div class="ratio-bar-wrap"><canvas id="ratio_bar_avg_ratio" width="280" height="160"></canvas></div>
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_avg_ratio" width="378" height="207" data-logical-w="291" data-logical-h="160" style="width: 291px; height: 160px;"></canvas></div>
             <div class="ratio-pct-block">
               <span class="ratio-pct-label">两日环比</span>
-              <span class="ratio-pct-value" id="ratio_avg_ratio_pct">-</span>
+              <span class="ratio-pct-value" id="ratio_avg_ratio_pct">106.67%</span>
             </div>
           </div>
         </div>
@@ -466,27 +464,27 @@
       <div class="grid-6">
         <div class="chart-card">
           <div class="chart-title">新增发帖7天趋势</div>
-          <canvas id="chart_post" width="420" height="210"></canvas>
+          <canvas id="chart_post" width="420" height="210" data-hover-bound="1"></canvas>
         </div>
         <div class="chart-card">
           <div class="chart-title">新增评论7天趋势</div>
-          <canvas id="chart_comment" width="420" height="210"></canvas>
+          <canvas id="chart_comment" width="420" height="210" data-hover-bound="1"></canvas>
         </div>
         <div class="chart-card">
           <div class="chart-title">带评帖占比7天趋势</div>
-          <canvas id="chart_rate" width="420" height="210"></canvas>
+          <canvas id="chart_rate" width="420" height="210" data-hover-bound="1"></canvas>
         </div>
         <div class="chart-card">
           <div class="chart-title">新增订阅7天趋势</div>
-          <canvas id="chart_sub_new" width="420" height="210"></canvas>
+          <canvas id="chart_sub_new" width="420" height="210" data-hover-bound="1"></canvas>
         </div>
         <div class="chart-card">
           <div class="chart-title">新增续订7天趋势</div>
-          <canvas id="chart_renew" width="420" height="210"></canvas>
+          <canvas id="chart_renew" width="420" height="210" data-hover-bound="1"></canvas>
         </div>
         <div class="chart-card">
           <div class="chart-title">人均评论比7天趋势</div>
-          <canvas id="chart_avg_ratio" width="420" height="210"></canvas>
+          <canvas id="chart_avg_ratio" width="420" height="210" data-hover-bound="1"></canvas>
         </div>
       </div>
     </section>
@@ -495,34 +493,35 @@
       <h2>工作日报填写</h2>
       <div class="worklog-card">
         <div class="worklog-head">
-          <div>【日期】 <span id="worklogDate">--/--/----</span></div>
+          <div>【日期】 <span id="worklogDate">01/04/2026</span></div>
           <div>【姓名】 陈讲</div>
           <div>【组别】 51吃瓜特战队app运营组</div>
         </div>
 
         <div class="worklog-title">一、今日完成工作</div>
-        <textarea id="wl_done" class="worklog-input" placeholder="请输入今日完成工作"></textarea>
+        <textarea id="wl_done" class="worklog-input" placeholder="请输入今日完成工作" style="height: 140px;"></textarea>
 
         <div class="worklog-title">二、今日发现问题</div>
         <div class="worklog-row">- • 问题：</div>
-        <textarea id="wl_issue" class="worklog-input short" placeholder="请输入问题"></textarea>
+        <textarea id="wl_issue" class="worklog-input short" placeholder="请输入问题" style="height: 68px;"></textarea>
         <div class="worklog-row">- • 是否解决：</div>
-        <textarea id="wl_solved" class="worklog-input short" placeholder="请输入是否解决"></textarea>
+        <textarea id="wl_solved" class="worklog-input short" placeholder="请输入是否解决" style="height: 68px;"></textarea>
         <div class="worklog-row">- • 需要协助：</div>
-        <textarea id="wl_help" class="worklog-input short" placeholder="请输入需要协助"></textarea>
+        <textarea id="wl_help" class="worklog-input short" placeholder="请输入需要协助" style="height: 68px;"></textarea>
 
         <div class="worklog-title">三、明日工作计划</div>
-        <textarea id="wl_plan" class="worklog-input" placeholder="请输入明日工作计划"></textarea>
+        <textarea id="wl_plan" class="worklog-input" placeholder="请输入明日工作计划" style="height: 92px;"></textarea>
 
         <div class="worklog-title">四、Agent自动化使用</div>
-        <textarea id="wl_agent" class="worklog-input" placeholder="请输入Agent自动化使用情况"></textarea>
+        <textarea id="wl_agent" class="worklog-input" placeholder="请输入Agent自动化使用情况" style="height: 80px;"></textarea>
       </div>
     </section>
   </div>
 
   <script>
-    window.__EMBEDDED_DASHBOARD_DATA__ = window.__EMBEDDED_DASHBOARD_DATA__ || null;
-    window.__EMBEDDED_WORKLOG_DATA__ = window.__EMBEDDED_WORKLOG_DATA__ || null;
+    window.__EMBEDDED_DASHBOARD_DATA__ = {"todayPost":"833","todayComment":"2073","todayRate":"30.93","todaySubNew":"55","todayRenew":"16","todayAvgRatio":"0.16","ydayPost":"780","ydayComment":"2138","ydayRate":"50.83","ydaySubNew":"70","ydayRenew":"16","ydayAvgRatio":"0.15","meta":{"latestYmdKey":"2026-03-30","prevYmdKey":"2026-03-29","latestSlashed":"2026/3/30","latestDayNum":30,"prevDayNum":29},"labels":["03-24","03-25","03-26","03-27","03-28","03-29","03-30"],"seriesPost":[851,895,855,763,869,780,833],"seriesComment":[2975,2602,2513,2347,2116,2138,2073],"seriesRate":[49.44,48.55,50.75,52.42,45.12,50.83,30.93],"seriesSubNew":[60,74,58,48,68,70,55],"seriesRenew":[12,18,14,14,20,16,16],"seriesAvgRatio":[0.23,0.2,0.19,0.18,0.15,0.15,0.16]};
+    window.__EMBEDDED_WORKLOG_DATA__ = {"wl_done":"1. 优化个人看板检索字段，更新并增加更多数据展示。\n2. 发帖视频剪辑，去水印。\n3. 使用原创博主账号发布内容，图+文+视频1篇。\n4. 评论互动15条。\n5. 设置github，将个人看板布置至github上。","wl_issue":"无","wl_solved":"无","wl_help":"无","wl_plan":"1. 原创博主账号发布内容。\n2. 互动评论。\n3. 普通账号发布内容。","wl_agent":"文案生成，正常使用。"};
+    window.__IS_EXPORTED_PACKED__ = true;
 
     const csvInput = document.getElementById("csvInput");
     const uploadBtn = document.getElementById("uploadBtn");
@@ -531,6 +530,7 @@
     const worklogDateEl = document.getElementById("worklogDate");
     let currentSnapshot = window.__EMBEDDED_DASHBOARD_DATA__;
     let currentWorklog = window.__EMBEDDED_WORKLOG_DATA__ || {};
+    const isExportedPacked = Boolean(window.__IS_EXPORTED_PACKED__);
     const chartState = {};
 
     uploadBtn.addEventListener("click", () => csvInput.click());
@@ -598,10 +598,27 @@
         const el = document.getElementById(id);
         if (!el) return;
         autoResizeTextarea(el);
+        if (isExportedPacked) return;
         el.addEventListener("input", () => {
           autoResizeTextarea(el);
           currentWorklog[id] = el.value;
         });
+      });
+    }
+
+    function setWorklogReadonly(readonly) {
+      WORKLOG_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (readonly) {
+          el.setAttribute("readonly", "readonly");
+          el.style.opacity = "0.88";
+          el.style.cursor = "not-allowed";
+        } else {
+          el.removeAttribute("readonly");
+          el.style.opacity = "";
+          el.style.cursor = "";
+        }
       });
     }
 
@@ -1056,11 +1073,13 @@
       currentWorklog = readWorklogFromDom();
       const markerDashboard = "window.__EMBEDDED_DASHBOARD_DATA__ = window.__EMBEDDED_DASHBOARD_DATA__ || null;";
       const markerWorklog = "window.__EMBEDDED_WORKLOG_DATA__ = window.__EMBEDDED_WORKLOG_DATA__ || null;";
+      const markerPacked = "window.__IS_EXPORTED_PACKED__ = window.__IS_EXPORTED_PACKED__ || false;";
       const embeddedScript = `window.__EMBEDDED_DASHBOARD_DATA__ = ${JSON.stringify(currentSnapshot)};`;
       const embeddedWorklogScript = `window.__EMBEDDED_WORKLOG_DATA__ = ${JSON.stringify(currentWorklog)};`;
       const html = document.documentElement.outerHTML
         .replace(markerDashboard, embeddedScript)
-        .replace(markerWorklog, embeddedWorklogScript);
+        .replace(markerWorklog, embeddedWorklogScript)
+        .replace(markerPacked, "window.__IS_EXPORTED_PACKED__ = true;");
       const blob = new Blob([html], { type: "text/html;charset=utf-8" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
@@ -1367,9 +1386,11 @@
 
     syncWorklogDate();
     restoreWorklogToDom(currentWorklog);
+    setWorklogReadonly(isExportedPacked);
     bindWorklogAutosave();
 
     CHART_IDS.forEach(id => bindChartHover(id));
   </script>
-</body>
-</html>
+
+
+</body></html>
