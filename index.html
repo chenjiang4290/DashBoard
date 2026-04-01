@@ -1,0 +1,1375 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>陈讲的个人工作看板</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --panel: #000000;
+      --panel-2: #000000;
+      --text: #FFFFFF;
+      --muted: #F6ECC9;
+      --accent: #EB7A53;
+      --accent-2: #F7D44C;
+      --ok: #F7D44C;
+      --warn: #F7D44C;
+      --danger: #EB7A53;
+      --border: #F6ECC9;
+      --shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1300px, 94vw);
+      margin: 20px auto 40px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title-wrap h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .title-wrap p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .upload-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+
+    .btn:hover { filter: brightness(1.07); }
+
+    .hint { color: var(--muted); font-size: 13px; }
+
+    .status {
+      margin: 8px 0 16px;
+      color: var(--accent-2);
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .section {
+      margin-top: 14px;
+    }
+
+    .section h2 {
+      margin: 8px 0 10px;
+      font-size: 16px;
+      font-weight: 650;
+      color: var(--text);
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card, .ratio-card, .chart-card {
+      background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .metric-title {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text);
+      min-height: 40px;
+    }
+
+    .metric-delta {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .delta-text {
+      line-height: 1;
+    }
+
+    .delta-arrow {
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid currentColor;
+      border-top: 2px solid currentColor;
+      transform-origin: center;
+      opacity: 0.95;
+      filter: drop-shadow(0 0 2px rgba(247, 212, 76, 0.35));
+    }
+
+    .delta-up {
+      color: #F7D44C;
+    }
+
+    .delta-up .delta-arrow {
+      transform: rotate(-45deg);
+    }
+
+    .delta-down {
+      color: #EB7A53;
+    }
+
+    .delta-down .delta-arrow {
+      transform: rotate(135deg);
+    }
+
+    .section-today h2 { color: var(--text); }
+    .section-today .metric-card {
+      background: var(--panel);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .section-today .metric-title { color: var(--accent); }
+    .section-today .metric-value { color: var(--text); text-shadow: none; }
+
+    .section-ratio h2 { color: var(--accent-2); }
+    .section-ratio .ratio-card {
+      background: var(--panel);
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 1px var(--accent-2);
+    }
+    .section-ratio .ratio-cell { background: transparent; border: none; padding: 6px 4px; }
+    .section-ratio .ratio-cell .label { color: var(--muted); }
+    .section-ratio .ratio-cell .value { color: var(--text); }
+    .section-ratio .ratio-cell.percent .value { color: var(--accent-2); }
+
+    .section-yday h2 { color: var(--muted); }
+    .section-yday .metric-card {
+      background: var(--panel);
+      border-color: var(--muted);
+      box-shadow: none;
+    }
+    .section-yday .metric-title { color: var(--muted); }
+    .section-yday .metric-value { color: var(--text); }
+
+    .section-trend h2 { color: var(--muted); }
+    .section-trend .chart-card {
+      background: var(--panel);
+      border-color: var(--muted);
+      box-shadow: none;
+    }
+    .section-trend .chart-title { color: var(--muted); }
+
+    .ratio-card .metric-title {
+      margin-bottom: 10px;
+    }
+
+    .ratio-chart-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 168px;
+    }
+
+    .ratio-bar-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ratio-bar-wrap canvas {
+      width: 100%;
+      height: 160px;
+      display: block;
+      background: #000000;
+      border: 1px solid #F6ECC9;
+      border-radius: 10px;
+    }
+
+    .ratio-pct-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 92px;
+      flex-shrink: 0;
+      padding-left: 10px;
+      border-left: 1px solid #F6ECC9;
+    }
+
+    .ratio-pct-label {
+      font-size: 12px;
+      color: #F6ECC9;
+      margin-bottom: 6px;
+    }
+
+    .ratio-pct-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #F7D44C;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .chart-card {
+      padding: 12px 12px 10px;
+      min-height: 260px;
+    }
+
+    .worklog-card {
+      background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .worklog-head {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .worklog-title {
+      margin: 14px 0 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .worklog-row {
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .worklog-input {
+      width: 100%;
+      min-height: 80px;
+      resize: none;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #000000;
+      color: var(--text);
+      padding: 10px 12px;
+      font: inherit;
+      line-height: 1.5;
+      outline: none;
+    }
+
+    .worklog-input:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 2px rgba(247, 212, 76, 0.25);
+    }
+
+    .worklog-input.short {
+      min-height: 56px;
+    }
+
+    .chart-title {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    canvas {
+      width: 100%;
+      height: 210px;
+      display: block;
+      background: #000000;
+      border: 1px solid #F6ECC9;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 1100px) {
+      .grid-4 { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+      .grid-6 { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .grid-4 { grid-template-columns: 1fr; }
+      .grid-6 { grid-template-columns: 1fr; }
+      .metric-value { font-size: 26px; }
+      .ratio-chart-row { flex-direction: column; }
+      .ratio-pct-block {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #F6ECC9;
+        padding: 10px 0 0;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title-wrap">
+        <h1>陈讲的个人工作看板</h1>
+        <p>岗位：产品经理</p>
+      </div>
+      <div class="upload-wrap">
+        <input id="csvInput" type="file" accept=".csv,text/csv" style="display:none" />
+        <button id="uploadBtn" class="btn">上传 CSV</button>
+        <button id="exportBtn" class="btn">导出当前带数据HTML</button>
+        <span class="hint">请上传格式正确的CSV</span>
+      </div>
+    </div>
+
+    <div id="status" class="status">等待上传 CSV 文件...</div>
+
+    <section class="section section-today">
+      <h2 id="section_latest_title">-/-/-数据</h2>
+      <div class="grid-6">
+        <div class="metric-card"><div class="metric-title" id="mt_post">-号新增发帖</div><div class="metric-value" id="today_post">-</div><div class="metric-delta" id="today_post_delta">较前日：-</div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_comment">-号新增评论</div><div class="metric-value" id="today_comment">-</div><div class="metric-delta" id="today_comment_delta">较前日：-</div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_rate">-号带评帖占比</div><div class="metric-value" id="today_rate">-</div><div class="metric-delta" id="today_rate_delta">较前日：-</div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_sub_new">-号新增订阅</div><div class="metric-value" id="today_sub_new">-</div><div class="metric-delta" id="today_sub_new_delta">较前日：-</div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_renew">-号新增续订</div><div class="metric-value" id="today_renew">-</div><div class="metric-delta" id="today_renew_delta">较前日：-</div></div>
+        <div class="metric-card"><div class="metric-title" id="mt_avg_ratio">-号人均评论比</div><div class="metric-value" id="today_avg_ratio">-</div><div class="metric-delta" id="today_avg_ratio_delta">较前日：-</div></div>
+      </div>
+    </section>
+
+    <section class="section section-ratio">
+      <h2>数据比较</h2>
+      <div class="grid-6">
+        <div class="ratio-card">
+          <div class="metric-title">新增发帖环比</div>
+          <div class="ratio-chart-row">
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_post" width="280" height="160"></canvas></div>
+            <div class="ratio-pct-block">
+              <span class="ratio-pct-label">两日环比</span>
+              <span class="ratio-pct-value" id="ratio_post_pct">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="ratio-card">
+          <div class="metric-title">新增评论环比</div>
+          <div class="ratio-chart-row">
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_comment" width="280" height="160"></canvas></div>
+            <div class="ratio-pct-block">
+              <span class="ratio-pct-label">两日环比</span>
+              <span class="ratio-pct-value" id="ratio_comment_pct">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="ratio-card">
+          <div class="metric-title">带评帖占比环比</div>
+          <div class="ratio-chart-row">
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_rate" width="280" height="160"></canvas></div>
+            <div class="ratio-pct-block">
+              <span class="ratio-pct-label">两日环比</span>
+              <span class="ratio-pct-value" id="ratio_rate_pct">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="ratio-card">
+          <div class="metric-title">新增订阅环比</div>
+          <div class="ratio-chart-row">
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_sub_new" width="280" height="160"></canvas></div>
+            <div class="ratio-pct-block">
+              <span class="ratio-pct-label">两日环比</span>
+              <span class="ratio-pct-value" id="ratio_sub_new_pct">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="ratio-card">
+          <div class="metric-title">新增续订环比</div>
+          <div class="ratio-chart-row">
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_renew" width="280" height="160"></canvas></div>
+            <div class="ratio-pct-block">
+              <span class="ratio-pct-label">两日环比</span>
+              <span class="ratio-pct-value" id="ratio_renew_pct">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="ratio-card">
+          <div class="metric-title">人均评论比环比</div>
+          <div class="ratio-chart-row">
+            <div class="ratio-bar-wrap"><canvas id="ratio_bar_avg_ratio" width="280" height="160"></canvas></div>
+            <div class="ratio-pct-block">
+              <span class="ratio-pct-label">两日环比</span>
+              <span class="ratio-pct-value" id="ratio_avg_ratio_pct">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-trend">
+      <h2 id="section_trend_title">7天数据</h2>
+      <div class="grid-6">
+        <div class="chart-card">
+          <div class="chart-title">新增发帖7天趋势</div>
+          <canvas id="chart_post" width="420" height="210"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">新增评论7天趋势</div>
+          <canvas id="chart_comment" width="420" height="210"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">带评帖占比7天趋势</div>
+          <canvas id="chart_rate" width="420" height="210"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">新增订阅7天趋势</div>
+          <canvas id="chart_sub_new" width="420" height="210"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">新增续订7天趋势</div>
+          <canvas id="chart_renew" width="420" height="210"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">人均评论比7天趋势</div>
+          <canvas id="chart_avg_ratio" width="420" height="210"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-worklog">
+      <h2>工作日报填写</h2>
+      <div class="worklog-card">
+        <div class="worklog-head">
+          <div>【日期】 <span id="worklogDate">--/--/----</span></div>
+          <div>【姓名】 陈讲</div>
+          <div>【组别】 51吃瓜特战队app运营组</div>
+        </div>
+
+        <div class="worklog-title">一、今日完成工作</div>
+        <textarea id="wl_done" class="worklog-input" placeholder="请输入今日完成工作"></textarea>
+
+        <div class="worklog-title">二、今日发现问题</div>
+        <div class="worklog-row">- • 问题：</div>
+        <textarea id="wl_issue" class="worklog-input short" placeholder="请输入问题"></textarea>
+        <div class="worklog-row">- • 是否解决：</div>
+        <textarea id="wl_solved" class="worklog-input short" placeholder="请输入是否解决"></textarea>
+        <div class="worklog-row">- • 需要协助：</div>
+        <textarea id="wl_help" class="worklog-input short" placeholder="请输入需要协助"></textarea>
+
+        <div class="worklog-title">三、明日工作计划</div>
+        <textarea id="wl_plan" class="worklog-input" placeholder="请输入明日工作计划"></textarea>
+
+        <div class="worklog-title">四、Agent自动化使用</div>
+        <textarea id="wl_agent" class="worklog-input" placeholder="请输入Agent自动化使用情况"></textarea>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    window.__EMBEDDED_DASHBOARD_DATA__ = window.__EMBEDDED_DASHBOARD_DATA__ || null;
+    window.__EMBEDDED_WORKLOG_DATA__ = window.__EMBEDDED_WORKLOG_DATA__ || null;
+
+    const csvInput = document.getElementById("csvInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const statusEl = document.getElementById("status");
+    const worklogDateEl = document.getElementById("worklogDate");
+    let currentSnapshot = window.__EMBEDDED_DASHBOARD_DATA__;
+    let currentWorklog = window.__EMBEDDED_WORKLOG_DATA__ || {};
+    const chartState = {};
+
+    uploadBtn.addEventListener("click", () => csvInput.click());
+    csvInput.addEventListener("change", onCsvSelected);
+    exportBtn.addEventListener("click", exportDashboardHtml);
+
+    const CSV_KEYS = {
+      post: ["发帖数"],
+      comment: ["通过评论数"],
+      rate: ["有评论帖子占比%", "有评论帖子占比"],
+      subNew: ["订阅新增数"],
+      renew: ["续订"],
+      avgRatio: ["人均评论比%", "人均评论比"]
+    };
+
+    const CHART_IDS = ["chart_post", "chart_comment", "chart_rate", "chart_sub_new", "chart_renew", "chart_avg_ratio"];
+    const CHART_COLORS = ["#EB7A53", "#F7D44C", "#F6ECC9", "#EB7A53", "#F7D44C", "#F6ECC9"];
+
+    const RATIO_BAR_IDS = ["ratio_bar_post", "ratio_bar_comment", "ratio_bar_rate", "ratio_bar_sub_new", "ratio_bar_renew", "ratio_bar_avg_ratio"];
+    const RATIO_BAR_VALUE_TWO_DEC = [false, false, true, false, false, true];
+
+    const WORKLOG_FIELDS = ["wl_done", "wl_issue", "wl_solved", "wl_help", "wl_plan", "wl_agent"];
+
+    function formatLocalTodayDdMmYyyy() {
+      const d = new Date();
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = String(d.getFullYear());
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function syncWorklogDate() {
+      if (worklogDateEl) {
+        worklogDateEl.textContent = formatLocalTodayDdMmYyyy();
+      }
+    }
+
+    function readWorklogFromDom() {
+      const data = {};
+      WORKLOG_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        data[id] = el ? el.value : "";
+      });
+      return data;
+    }
+
+    function restoreWorklogToDom(data) {
+      if (!data || typeof data !== "object") return;
+      WORKLOG_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = data[id] != null ? String(data[id]) : "";
+        autoResizeTextarea(el);
+      });
+    }
+
+    function autoResizeTextarea(el) {
+      if (!el) return;
+      el.style.height = "auto";
+      el.style.height = `${Math.max(el.scrollHeight, parseInt(getComputedStyle(el).minHeight, 10) || 0)}px`;
+    }
+
+    function bindWorklogAutosave() {
+      WORKLOG_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        autoResizeTextarea(el);
+        el.addEventListener("input", () => {
+          autoResizeTextarea(el);
+          currentWorklog[id] = el.value;
+        });
+      });
+    }
+
+    function setText(id, value) {
+      document.getElementById(id).textContent = value ?? "-";
+    }
+
+    function safeNum(v) {
+      if (v === null || v === undefined) return NaN;
+      const cleaned = String(v).replace(/,/g, "").replace(/[^\d.\-]/g, "").trim();
+      return cleaned === "" ? NaN : Number(cleaned);
+    }
+
+    function formatDisplay(v) {
+      if (v === null || v === undefined || String(v).trim() === "") return "-";
+      return String(v);
+    }
+
+    function formatPercent(today, yday) {
+      const a = safeNum(today);
+      const b = safeNum(yday);
+      if (!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return "--";
+      return ((a / b) * 100).toFixed(2) + "%";
+    }
+
+    /** decimals: 1 默认；带评帖占比、人均评论比的较前日用 2 */
+    function formatDelta(today, yday, decimals) {
+      const a = safeNum(today);
+      const b = safeNum(yday);
+      if (!Number.isFinite(a) || !Number.isFinite(b)) return { text: "较前日：--", direction: "flat" };
+      const delta = a - b;
+      const sign = delta >= 0 ? "+" : "";
+      const dec = decimals === 2 ? 2 : 1;
+      const text = dec === 2
+        ? delta.toFixed(2)
+        : (Number.isInteger(delta) ? String(delta) : delta.toFixed(1));
+      const direction = delta > 0 ? "up" : (delta < 0 ? "down" : "flat");
+      return { text: `较前日：${sign}${text}`, direction };
+    }
+
+    function setDelta(id, today, yday, decimals) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const delta = formatDelta(today, yday, decimals);
+      el.classList.remove("delta-up", "delta-down");
+      if (delta.direction === "up") {
+        el.classList.add("delta-up");
+        el.innerHTML = `<span class="delta-text">${delta.text}</span><span class="delta-arrow" aria-hidden="true"></span>`;
+      } else if (delta.direction === "down") {
+        el.classList.add("delta-down");
+        el.innerHTML = `<span class="delta-text">${delta.text}</span><span class="delta-arrow" aria-hidden="true"></span>`;
+      } else {
+        el.innerHTML = `<span class="delta-text">${delta.text}</span>`;
+      }
+    }
+
+    function pad2(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    /** 按浏览器本机时区取日历日 YYYY-MM-DD（与「今天/昨天」一致） */
+    function dayKey(dt) {
+      return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+    }
+
+    function ymdKeyToMonthDayLabel(ymdKey) {
+      const p = String(ymdKey || "").split("-");
+      if (p.length !== 3) return String(ymdKey);
+      return `${p[1]}-${p[2]}`;
+    }
+
+    /** 日历日加减，得到 YYYY-MM-DD */
+    function addDaysToYmdKey(ymdKey, deltaDays) {
+      const [y, m, d] = ymdKey.split("-").map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d));
+      dt.setUTCDate(dt.getUTCDate() + deltaDays);
+      return `${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth() + 1)}-${pad2(dt.getUTCDate())}`;
+    }
+
+    function formatYmdSlashed(ymdKey) {
+      const p = String(ymdKey || "").split("-");
+      if (p.length !== 3) return String(ymdKey);
+      return `${Number(p[0])}/${Number(p[1])}/${Number(p[2])}`;
+    }
+
+    function dayNumFromYmd(ymdKey) {
+      const p = String(ymdKey || "").split("-");
+      return p.length === 3 ? Number(p[2]) : NaN;
+    }
+
+    function renderDynamicLabels(meta) {
+      if (!meta || meta.latestSlashed == null) return;
+      const { latestSlashed, latestDayNum, prevDayNum } = meta;
+      setText("section_latest_title", `${latestSlashed}数据`);
+      setText("mt_post", `${latestDayNum}号新增发帖`);
+      setText("mt_comment", `${latestDayNum}号新增评论`);
+      setText("mt_rate", `${latestDayNum}号带评帖占比`);
+      setText("mt_sub_new", `${latestDayNum}号新增订阅`);
+      setText("mt_renew", `${latestDayNum}号新增续订`);
+      setText("mt_avg_ratio", `${latestDayNum}号人均评论比`);
+    }
+
+    /** 去掉各类空白、零宽字符，避免 CSV/Excel 导出里看不见的空格导致解析失败 */
+    function stripInvisible(s) {
+      return String(s || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/[\uFEFF\u200B-\u200D\u202F\u00A0\u3000\u2007-\u200A\u205F]/g, "")
+        .trim();
+    }
+
+    /**
+     * 将单元格解析为日历日 YYYY-MM-DD 字符串，再与 todayKey/ydayKey 比对（不依赖 Date 时区歧义）。
+     * 支持：2026/3/31、2026-03-31、2026.3.31、全角分隔符、可选时间 2026-3-31 12:00:00、Excel 序列号等。
+     */
+    function parseCellToYmdKey(v) {
+      let s = stripInvisible(v);
+      if (!s) return null;
+
+      s = s
+        .replace(/[\uFF10-\uFF19]/g, ch =>
+          String.fromCharCode(ch.charCodeAt(0) - 0xff10 + 0x30))
+        .replace(/[\uFF0F\uFF3C]/g, "/")
+        .replace(/[\uFF0E\u3002]/g, ".")
+        .replace(/[\uFF0D\u2013\u2014\u2212]/g, "-");
+
+      const excel = parseExcelSerialMaybe(s.replace(/\s/g, ""));
+      if (excel) return dayKey(excel);
+
+      s = s.replace(/[./]/g, "-").replace(/\s+/g, "");
+      const head = s.split(/[Tt]/)[0].trim();
+
+      const m = head.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if (m) {
+        const y = Number(m[1]);
+        const mo = Number(m[2]);
+        const d = Number(m[3]);
+        const test = new Date(Date.UTC(y, mo - 1, d));
+        if (
+          test.getUTCFullYear() === y &&
+          test.getUTCMonth() === mo - 1 &&
+          test.getUTCDate() === d
+        ) {
+          return `${y}-${pad2(mo)}-${pad2(d)}`;
+        }
+        return null;
+      }
+
+      const dt2 = new Date(s);
+      return Number.isNaN(dt2.getTime()) ? null : dayKey(dt2);
+    }
+
+    /** Excel 另存为 CSV 时，日期格有时是数字序列（约 40000～60000 对应近年） */
+    function parseExcelSerialMaybe(s) {
+      const t = String(s || "").trim();
+      if (!/^\d+(\.\d+)?$/.test(t)) return null;
+      const n = Number(t);
+      if (!Number.isFinite(n) || n < 20000 || n > 80000) return null;
+      const utcMs = Date.UTC(1899, 11, 30) + Math.floor(n) * 86400000;
+      const d = new Date(utcMs);
+      if (Number.isNaN(d.getTime())) return null;
+      return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+    }
+
+    function normalizeHeaderName(s) {
+      return String(s || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/[\u200B-\u200D\uFEFF]/g, "")
+        .replace(/\u3000/g, " ")
+        .trim();
+    }
+
+    /** 定位「日期」列下标：兼容表头前后空格、全角空格、名称略异 */
+    function resolveDateColumnIndex(headers) {
+      const list = headers.map((h, i) => ({
+        i,
+        norm: normalizeHeaderName(h)
+      }));
+      const rules = [
+        n => n === "日期",
+        n => /^date$/i.test(n),
+        n => n.includes("日期"),
+        n => /日期/.test(n)
+      ];
+      for (const rule of rules) {
+        const hit = list.find(x => x.norm && rule(x.norm));
+        if (hit) return hit.i;
+      }
+      return -1;
+    }
+
+    function countDelimiterOutsideQuotes(line, delimiter) {
+      let inQuotes = false;
+      let count = 0;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === "\"") {
+          if (inQuotes && line[i + 1] === "\"") i++;
+          else inQuotes = !inQuotes;
+        } else if (ch === delimiter && !inQuotes) {
+          count++;
+        }
+      }
+      return count;
+    }
+
+    function detectDelimiter(firstLine) {
+      const candidates = [",", ";", "\t"];
+      let best = ",";
+      let bestCount = -1;
+      for (const d of candidates) {
+        const c = countDelimiterOutsideQuotes(firstLine, d);
+        if (c > bestCount) {
+          bestCount = c;
+          best = d;
+        }
+      }
+      return bestCount > 0 ? best : ",";
+    }
+
+    function parseCSV(text) {
+      const lines = text
+        .replace(/^\uFEFF/, "")
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== "");
+      if (lines.length < 2) {
+        throw new Error("CSV 至少需要表头和一行数据。");
+      }
+      const delimiter = detectDelimiter(lines[0]);
+      const headers = parseCSVLine(lines[0], delimiter);
+      const rows = lines.slice(1).map(line => parseCSVLine(line, delimiter));
+      return { headers, rows };
+    }
+
+    function parseCSVLine(line, delimiter = ",") {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === "\"") {
+          if (inQuotes && line[i + 1] === "\"") {
+            current += "\"";
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === delimiter && !inQuotes) {
+          result.push(current.trim());
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
+    function buildRowObjects(headers, rows) {
+      return rows.map(row => {
+        const obj = {};
+        headers.forEach((h, idx) => { obj[h.trim()] = row[idx] ?? ""; });
+        return obj;
+      });
+    }
+
+    function getValue(row, names) {
+      for (const name of names) {
+        if (Object.prototype.hasOwnProperty.call(row, name)) return row[name];
+      }
+      return "";
+    }
+
+    function formatBarTopValue(v, twoDecimals) {
+      const n = safeNum(v);
+      if (!Number.isFinite(n)) return "-";
+      return twoDecimals ? n.toFixed(2) : (Number.isInteger(n) ? String(n) : n.toFixed(1));
+    }
+
+    function drawRatioBarChart(canvasId, valPrev, valLatest, labelDayPrev, labelDayLatest, barValueTwoDecimals) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const w = Number(canvas.dataset.logicalW) || canvas.getBoundingClientRect().width;
+      const h = Number(canvas.dataset.logicalH) || 160;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const a = safeNum(valPrev);
+      const b = safeNum(valLatest);
+      const margin = { top: 34, bottom: 24, left: 14, right: 14 };
+      const plotW = w - margin.left - margin.right;
+      const plotH = h - margin.top - margin.bottom;
+      const gapPx = 1;
+      const pairTotal = Math.min(plotW * 0.72, 200);
+      const bw = Math.max(14, Math.floor((pairTotal - gapPx) / 2));
+      const x1 = margin.left + (plotW - (2 * bw + gapPx)) / 2;
+      const x2 = x1 + bw + gapPx;
+
+      let maxV = 1;
+      if (Number.isFinite(a) && Number.isFinite(b)) {
+        maxV = Math.max(Math.abs(a), Math.abs(b), 0);
+        if (maxV === 0) maxV = 1;
+      }
+
+      const y0 = margin.top + plotH;
+
+      function barHeight(val) {
+        if (!Number.isFinite(val)) return 0;
+        return (Math.abs(val) / maxV) * plotH;
+      }
+
+      const h1 = barHeight(a);
+      const h2 = barHeight(b);
+
+      function fillRoundTopBar(px, pyTop, pw, ph, color) {
+        if (ph <= 0) return;
+        const r = Math.min(8, pw * 0.22, ph * 0.35);
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(px, pyTop + ph);
+        ctx.lineTo(px, pyTop + r);
+        ctx.quadraticCurveTo(px, pyTop, px + r, pyTop);
+        ctx.lineTo(px + pw - r, pyTop);
+        ctx.quadraticCurveTo(px + pw, pyTop, px + pw, pyTop + r);
+        ctx.lineTo(px + pw, pyTop + ph);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = "rgba(246,236,201,0.2)";
+      ctx.lineWidth = 1 / dpr;
+      ctx.beginPath();
+      ctx.moveTo(margin.left, y0 + 0.5);
+      ctx.lineTo(w - margin.right, y0 + 0.5);
+      ctx.stroke();
+
+      fillRoundTopBar(x1, y0 - h1, bw, h1, "#F6ECC9");
+      fillRoundTopBar(x2, y0 - h2, bw, h2, "#EB7A53");
+
+      ctx.textBaseline = "alphabetic";
+      ctx.textAlign = "center";
+      ctx.imageSmoothingEnabled = true;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "12px Segoe UI, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      const t1 = formatBarTopValue(valPrev, barValueTwoDecimals);
+      const t2 = formatBarTopValue(valLatest, barValueTwoDecimals);
+      ctx.fillText(t1, Math.round(x1 + bw / 2), Math.round(y0 - h1 - 8));
+      ctx.fillText(t2, Math.round(x2 + bw / 2), Math.round(y0 - h2 - 8));
+
+      ctx.fillStyle = "#F6ECC9";
+      ctx.font = "11px Segoe UI, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText(labelDayPrev, Math.round(x1 + bw / 2), Math.round(y0 + 15));
+      ctx.fillText(labelDayLatest, Math.round(x2 + bw / 2), Math.round(y0 + 15));
+    }
+
+    function syncRatioBarCanvasSizes() {
+      const dpr = window.devicePixelRatio || 1;
+      RATIO_BAR_IDS.forEach(id => {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        const wrap = canvas.parentElement;
+        const rect = wrap ? wrap.getBoundingClientRect() : canvas.getBoundingClientRect();
+        const cssW = Math.max(200, Math.floor(rect.width));
+        const cssH = 160;
+        canvas.width = Math.max(1, Math.floor(cssW * dpr));
+        canvas.height = Math.max(1, Math.floor(cssH * dpr));
+        canvas.style.width = `${cssW}px`;
+        canvas.style.height = `${cssH}px`;
+        canvas.dataset.logicalW = String(cssW);
+        canvas.dataset.logicalH = String(cssH);
+      });
+    }
+
+    function drawAllRatioBars(snapshot) {
+      const {
+        todayPost, todayComment, todayRate, todaySubNew, todayRenew, todayAvgRatio,
+        ydayPost, ydayComment, ydayRate, ydaySubNew, ydayRenew, ydayAvgRatio,
+        meta
+      } = snapshot;
+      if (!meta) return;
+      syncRatioBarCanvasSizes();
+      const lp = `${meta.prevDayNum}号`;
+      const lm = `${meta.latestDayNum}号`;
+      const vals = [
+        [ydayPost, todayPost],
+        [ydayComment, todayComment],
+        [ydayRate, todayRate],
+        [ydaySubNew, todaySubNew],
+        [ydayRenew, todayRenew],
+        [ydayAvgRatio, todayAvgRatio]
+      ];
+      RATIO_BAR_IDS.forEach((id, i) => {
+        drawRatioBarChart(
+          id,
+          vals[i][0],
+          vals[i][1],
+          lp,
+          lm,
+          RATIO_BAR_VALUE_TWO_DEC[i]
+        );
+      });
+    }
+
+    function renderDashboard(snapshot) {
+      const {
+        todayPost, todayComment, todayRate, todaySubNew, todayRenew, todayAvgRatio,
+        ydayPost, ydayComment, ydayRate, ydaySubNew, ydayRenew, ydayAvgRatio,
+        labels,
+        seriesPost, seriesComment, seriesRate, seriesSubNew, seriesRenew, seriesAvgRatio,
+        meta
+      } = snapshot;
+
+      renderDynamicLabels(meta);
+
+      setText("today_post", formatDisplay(todayPost));
+      setText("today_comment", formatDisplay(todayComment));
+      setText("today_rate", formatDisplay(todayRate));
+      setText("today_sub_new", formatDisplay(todaySubNew));
+      setText("today_renew", formatDisplay(todayRenew));
+      setText("today_avg_ratio", formatDisplay(todayAvgRatio));
+      setDelta("today_post_delta", todayPost, ydayPost);
+      setDelta("today_comment_delta", todayComment, ydayComment);
+      setDelta("today_rate_delta", todayRate, ydayRate, 2);
+      setDelta("today_sub_new_delta", todaySubNew, ydaySubNew);
+      setDelta("today_renew_delta", todayRenew, ydayRenew);
+      setDelta("today_avg_ratio_delta", todayAvgRatio, ydayAvgRatio, 2);
+
+      setText("ratio_post_pct", formatPercent(todayPost, ydayPost));
+      setText("ratio_comment_pct", formatPercent(todayComment, ydayComment));
+      setText("ratio_rate_pct", formatPercent(todayRate, ydayRate));
+      setText("ratio_sub_new_pct", formatPercent(todaySubNew, ydaySubNew));
+      setText("ratio_renew_pct", formatPercent(todayRenew, ydayRenew));
+      setText("ratio_avg_ratio_pct", formatPercent(todayAvgRatio, ydayAvgRatio));
+
+      drawAllRatioBars(snapshot);
+
+      const seriesList = [seriesPost, seriesComment, seriesRate, seriesSubNew, seriesRenew, seriesAvgRatio];
+      CHART_IDS.forEach((id, i) => {
+        drawLineChart(id, labels, seriesList[i], CHART_COLORS[i]);
+      });
+    }
+
+    function exportDashboardHtml() {
+      if (!currentSnapshot) {
+        statusEl.textContent = "请先上传CSV并生成看板数据后，再导出。";
+        return;
+      }
+      currentWorklog = readWorklogFromDom();
+      const markerDashboard = "window.__EMBEDDED_DASHBOARD_DATA__ = window.__EMBEDDED_DASHBOARD_DATA__ || null;";
+      const markerWorklog = "window.__EMBEDDED_WORKLOG_DATA__ = window.__EMBEDDED_WORKLOG_DATA__ || null;";
+      const embeddedScript = `window.__EMBEDDED_DASHBOARD_DATA__ = ${JSON.stringify(currentSnapshot)};`;
+      const embeddedWorklogScript = `window.__EMBEDDED_WORKLOG_DATA__ = ${JSON.stringify(currentWorklog)};`;
+      const html = document.documentElement.outerHTML
+        .replace(markerDashboard, embeddedScript)
+        .replace(markerWorklog, embeddedWorklogScript);
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "noTALK-WJ51dashboard-packed.html";
+      link.click();
+      URL.revokeObjectURL(link.href);
+      statusEl.textContent = "已导出：noTALK-WJ51dashboard-packed.html";
+    }
+
+    function onCsvSelected(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const { headers, rows } = parseCSV(String(reader.result || ""));
+          const dataRows = buildRowObjects(headers, rows);
+          const dateColIndex = resolveDateColumnIndex(headers);
+          if (dateColIndex < 0) {
+            const show = headers.map(h => `"${normalizeHeaderName(h)}"`).join(" | ");
+            throw new Error(`未找到日期列表头（需含「日期」或 Date）。当前表头：${show}`);
+          }
+
+          const rowsWithDate = rows
+            .map((rowArr, idx) => {
+              const cell = rowArr[dateColIndex] != null ? rowArr[dateColIndex] : "";
+              const ymdKey = parseCellToYmdKey(cell);
+              return ymdKey ? { row: dataRows[idx], ymdKey } : null;
+            })
+            .filter(Boolean);
+
+          if (rowsWithDate.length === 0) {
+            const sample = rows.slice(0, 3).map(r => (r[dateColIndex] != null ? r[dateColIndex] : "")).join("；");
+            throw new Error(
+              "日期列已找到，但单元格均无法解析为日期。请确认如 2026/3/31 或 2026-03-31。" +
+              (sample ? ` 前几格示例：${sample}` : "")
+            );
+          }
+
+          const allYmd = rowsWithDate.map(x => x.ymdKey);
+          const latestYmdKey = allYmd.reduce((a, b) => (a > b ? a : b));
+          const prevYmdKey = addDaysToYmdKey(latestYmdKey, -1);
+          const parsedDatesSample = [...new Set(allYmd)].sort().join("、");
+
+          const latestItem = rowsWithDate.find(item => item.ymdKey === latestYmdKey);
+          const prevItem = rowsWithDate.find(item => item.ymdKey === prevYmdKey);
+
+          if (!latestItem) {
+            throw new Error("未找到最新日期对应行。");
+          }
+          if (!prevItem) {
+            throw new Error(
+              `未找到对比日数据：CSV 中需包含紧邻上一日（${formatYmdSlashed(prevYmdKey)}）一行。` +
+              (parsedDatesSample ? ` 当前已解析日期：${parsedDatesSample}` : "")
+            );
+          }
+
+          const today = latestItem.row;
+          const yday = prevItem.row;
+
+          const todayPost = getValue(today, CSV_KEYS.post);
+          const todayComment = getValue(today, CSV_KEYS.comment);
+          const todayRate = getValue(today, CSV_KEYS.rate);
+          const todaySubNew = getValue(today, CSV_KEYS.subNew);
+          const todayRenew = getValue(today, CSV_KEYS.renew);
+          const todayAvgRatio = getValue(today, CSV_KEYS.avgRatio);
+
+          const ydayPost = getValue(yday, CSV_KEYS.post);
+          const ydayComment = getValue(yday, CSV_KEYS.comment);
+          const ydayRate = getValue(yday, CSV_KEYS.rate);
+          const ydaySubNew = getValue(yday, CSV_KEYS.subNew);
+          const ydayRenew = getValue(yday, CSV_KEYS.renew);
+          const ydayAvgRatio = getValue(yday, CSV_KEYS.avgRatio);
+
+          const trendSource = rowsWithDate
+            .filter(item => item.ymdKey <= latestYmdKey)
+            .sort((a, b) => a.ymdKey.localeCompare(b.ymdKey))
+            .slice(-7);
+
+          if (trendSource.length < 7) {
+            throw new Error("距离 CSV 最新日期不足7天有效数据，无法绘制7天数据。");
+          }
+
+          const trendRows = trendSource.map(item => item.row);
+          const labels = trendSource.map(item => ymdKeyToMonthDayLabel(item.ymdKey));
+
+          const seriesPost = trendRows.map(r => safeNum(getValue(r, CSV_KEYS.post)));
+          const seriesComment = trendRows.map(r => safeNum(getValue(r, CSV_KEYS.comment)));
+          const seriesRate = trendRows.map(r => safeNum(getValue(r, CSV_KEYS.rate)));
+          const seriesSubNew = trendRows.map(r => safeNum(getValue(r, CSV_KEYS.subNew)));
+          const seriesRenew = trendRows.map(r => safeNum(getValue(r, CSV_KEYS.renew)));
+          const seriesAvgRatio = trendRows.map(r => safeNum(getValue(r, CSV_KEYS.avgRatio)));
+
+          const meta = {
+            latestYmdKey,
+            prevYmdKey,
+            latestSlashed: formatYmdSlashed(latestYmdKey),
+            latestDayNum: dayNumFromYmd(latestYmdKey),
+            prevDayNum: dayNumFromYmd(prevYmdKey)
+          };
+
+          currentSnapshot = {
+            todayPost, todayComment, todayRate, todaySubNew, todayRenew, todayAvgRatio,
+            ydayPost, ydayComment, ydayRate, ydaySubNew, ydayRenew, ydayAvgRatio,
+            meta,
+            labels,
+            seriesPost, seriesComment, seriesRate, seriesSubNew, seriesRenew, seriesAvgRatio
+          };
+
+          renderDashboard(currentSnapshot);
+
+          statusEl.textContent = `已加载：${file.name}`;
+        } catch (err) {
+          statusEl.textContent = "CSV 读取失败：" + (err && err.message ? err.message : String(err));
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    function drawLineChart(canvasId, labels, values, lineColor) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const margin = { top: 16, right: 16, bottom: 42, left: 44 };
+      const plotW = w - margin.left - margin.right;
+      const plotH = h - margin.top - margin.bottom;
+
+      const finiteValues = values.filter(v => Number.isFinite(v));
+      const minV = finiteValues.length ? Math.min(...finiteValues) : 0;
+      const maxV = finiteValues.length ? Math.max(...finiteValues) : 1;
+      const span = maxV - minV || 1;
+
+      ctx.strokeStyle = "rgba(246,236,201,0.25)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 0; i <= 4; i++) {
+        const y = margin.top + (plotH / 4) * i;
+        ctx.moveTo(margin.left, y);
+        ctx.lineTo(margin.left + plotW, y);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = "#F6ECC9";
+      ctx.font = "11px Segoe UI";
+      for (let i = 0; i <= 4; i++) {
+        const v = maxV - (span / 4) * i;
+        const y = margin.top + (plotH / 4) * i + 4;
+        ctx.fillText(Number.isFinite(v) ? v.toFixed(1) : "-", 4, y);
+      }
+
+      const points = values.map((v, i) => {
+        const x = margin.left + (plotW * i) / Math.max(1, values.length - 1);
+        const yVal = Number.isFinite(v) ? v : minV;
+        const y = margin.top + ((maxV - yVal) / span) * plotH;
+        return { x, y, v };
+      });
+
+      if (points.length > 0) {
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        points.forEach((p, idx) => {
+          if (idx === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.stroke();
+
+        ctx.fillStyle = lineColor;
+        points.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      ctx.fillStyle = "#F6ECC9";
+      ctx.font = "11px Segoe UI";
+      labels.forEach((label, i) => {
+        const x = margin.left + (plotW * i) / Math.max(1, labels.length - 1);
+        const text = String(label);
+        ctx.save();
+        ctx.translate(x, h - 10);
+        ctx.rotate(-0.28);
+        ctx.fillText(text, -16, 0);
+        ctx.restore();
+      });
+
+      chartState[canvasId] = {
+        labels,
+        values,
+        points,
+        lineColor,
+        hoverIndex: chartState[canvasId] ? chartState[canvasId].hoverIndex : -1
+      };
+      drawChartTooltip(canvasId);
+    }
+
+    function drawChartTooltip(canvasId) {
+      const state = chartState[canvasId];
+      if (!state || state.hoverIndex == null || state.hoverIndex < 0) return;
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext("2d");
+      const idx = state.hoverIndex;
+      const p = state.points[idx];
+      if (!p) return;
+
+      const label = String(state.labels[idx] ?? "-");
+      const raw = state.values[idx];
+      const valueText = Number.isFinite(raw) ? String(raw) : "-";
+      const tip = `${label} | ${valueText}`;
+
+      ctx.save();
+      ctx.fillStyle = "#000000";
+      ctx.strokeStyle = state.lineColor;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = "12px Segoe UI";
+      const padX = 8;
+      const padY = 5;
+      const textW = ctx.measureText(tip).width;
+      const boxW = textW + padX * 2;
+      const boxH = 24;
+      let boxX = p.x + 10;
+      let boxY = p.y - boxH - 10;
+      if (boxX + boxW > canvas.width - 6) boxX = p.x - boxW - 10;
+      if (boxY < 6) boxY = p.y + 10;
+
+      ctx.fillStyle = "#000000";
+      ctx.strokeStyle = "#F6ECC9";
+      ctx.lineWidth = 1;
+      ctx.fillRect(boxX, boxY, boxW, boxH);
+      ctx.strokeRect(boxX, boxY, boxW, boxH);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillText(tip, boxX + padX, boxY + boxH - padY - 2);
+      ctx.restore();
+    }
+
+    function bindChartHover(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || canvas.dataset.hoverBound === "1") return;
+      canvas.dataset.hoverBound = "1";
+
+      canvas.addEventListener("mousemove", e => {
+        const state = chartState[canvasId];
+        if (!state || !state.points || state.points.length === 0) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
+
+        let hit = -1;
+        let minDist = Infinity;
+        state.points.forEach((p, i) => {
+          const dx = p.x - mx;
+          const dy = p.y - my;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 10 && d < minDist) {
+            minDist = d;
+            hit = i;
+          }
+        });
+
+        if (state.hoverIndex !== hit) {
+          state.hoverIndex = hit;
+          if (currentSnapshot) renderDashboard(currentSnapshot);
+        }
+      });
+
+      canvas.addEventListener("mouseleave", () => {
+        const state = chartState[canvasId];
+        if (!state) return;
+        if (state.hoverIndex !== -1) {
+          state.hoverIndex = -1;
+          if (currentSnapshot) renderDashboard(currentSnapshot);
+        }
+      });
+    }
+
+    window.addEventListener("resize", () => {
+      CHART_IDS.forEach(id => {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = Math.max(360, Math.floor(rect.width));
+      });
+      syncRatioBarCanvasSizes();
+      if (currentSnapshot) renderDashboard(currentSnapshot);
+    });
+
+    if (currentSnapshot) {
+      renderDashboard(currentSnapshot);
+      statusEl.textContent = "已加载：内嵌数据";
+    }
+
+    syncWorklogDate();
+    restoreWorklogToDom(currentWorklog);
+    bindWorklogAutosave();
+
+    CHART_IDS.forEach(id => bindChartHover(id));
+  </script>
+</body>
+</html>
